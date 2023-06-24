@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">PetCareApp</string>
+    <string name="inregistrare_cont_nou">Inregistrare cont nou</string>
+    <string name="logare">Logare</string>
+    <string name="nume">Nume</string>
+    <string name="prenume">Prenume</string>
+    <string name="adresa_email">Adresa Email</string>
+    <string name="parola">Parola</string>
+    <string name="inregistrare">Inregistrare</string>
+    <string name="login">Start</string>
+    <string name="register">Click aici pentru inregistrare</string>
+    <string name="email">Adresa Email</string>
+    <string name="password">Parola</string>
+    <string-array name="userType">
+        <item>Detin un animal de companie</item>
+        <item>Sunt medic veterinar</item>
+    </string-array>
+    <string name="name">Nume</string>
+    <string name="pet_name">Nume Animal</string>
+    <string name="user_name">Utilizator</string>
+    <string name="breed">Rasa</string>
+    <string name="type">Tip</string>
+    <string name="dob">Data Nasterii</string>
+    <string name="date_time">Selecteaza data si ora</string>
+    <string name="weight">Greutate (KG)</string>
+    <string name="add_pet">Adauga animal</string>
+    <string name="add_alerts">Adauga Alerte</string>
+    <string name="add_consultations">Adauga consultatie</string>
+    <string name="save">Salvare</string>
+    <string name="cancel">Renunta</string>
+    <string name="edit">Editeaza</string>
+    <string name="delete">Sterge</string>
+    <string name="edit_pet">Editeaza</string>
+    <string name="edit_alert">Editeaza</string>
+    <string name="delete_pet">Delete selected pet?</string>
+    <string name="delete_pets">Delete selected pets?</string>
+    <string name="empty_view_title_text">Adauga un aminal de companie</string>
+    <string name="empty_view_title_text_alerts">Adauga o alerta pentru animalul de companie</string>
+    <string name="alert_type">Tip alerta</string>
+    <string name="pet_type">Tip animal</string>
+    <string name="pet_breed">Rasa</string>
+    <string name="subject">Subiect</string>
+    <string name="recommendation">Recomandare</string>
+    <string name="profil_pets">Profil Pets</string>
+    <string name="sterilizat">Sterilizat</string>
+    <string name="da">DA</string>
+    <string name="nu">NU</string>
+    <string name="istoric_consultatii">Istoric Consultatii</string>
+    <string name="data_consultatie">Data Consultatie</string>
+
+</resources>

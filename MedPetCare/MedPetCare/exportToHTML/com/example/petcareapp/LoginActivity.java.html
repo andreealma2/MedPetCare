@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>LoginActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #1750eb;}
+.s3 { color: #067d17;}
+.s4 { color: #8c8c8c; font-style: italic;}
+.ls0 { height: 1px; border-width: 0; color: #c0c0c0; background-color:#c0c0c0}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+LoginActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.petcareapp;</span>
+
+
+<span class="s0">import </span><span class="s1">android.annotation.SuppressLint;</span>
+<span class="s0">import </span><span class="s1">android.content.DialogInterface;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle;</span>
+<span class="s0">import </span><span class="s1">android.view.View;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button;</span>
+<span class="s0">import </span><span class="s1">android.widget.EditText;</span>
+<span class="s0">import </span><span class="s1">android.widget.ProgressBar;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AlertDialog;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity;</span>
+
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnFailureListener;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnSuccessListener;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.FirebaseAuth;</span>
+
+<span class="s0">import </span><span class="s1">java.util.Objects;</span>
+
+
+<span class="s0">public class </span><span class="s1">LoginActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+    <span class="s1">EditText edUsername, edPassword;</span>
+    <span class="s1">Button btn;</span>
+    <span class="s1">TextView tv, forgotTextLink;</span>
+    <span class="s1">ProgressBar progressBar;</span>
+    <span class="s1">FirebaseAuth fAuth;</span>
+<hr class="ls0">    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState);</span>
+        <span class="s1">setContentView(R.layout.activity_login);</span>
+
+        <span class="s1">edUsername = findViewById(R.id.editTextEmailRegister);</span>
+        <span class="s1">edPassword = findViewById(R.id.editTextRegisterPassword);</span>
+        <span class="s1">btn = findViewById(R.id.buttonLogin);</span>
+        <span class="s1">tv = findViewById(R.id.tvNewUser);</span>
+        <span class="s1">progressBar = findViewById(R.id.progressBar2);</span>
+        <span class="s1">fAuth = FirebaseAuth.getInstance();</span>
+        <span class="s1">forgotTextLink = findViewById(R.id.textViewForgotPass);</span>
+
+        <span class="s1">btn.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+        <span class="s1">String username = edUsername.getText().toString();</span>
+        <span class="s1">String password = edPassword.getText().toString();</span>
+        <span class="s0">if </span><span class="s1">(username.length() == </span><span class="s2">0 </span><span class="s1">|| password.length() == </span><span class="s2">0</span><span class="s1">) {</span>
+            <span class="s1">Toast.makeText(getApplicationContext(), </span><span class="s3">&quot;Introduceti datele de logare&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show();</span>
+        <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+            <span class="s1">Toast.makeText(getApplicationContext(), </span><span class="s3">&quot;Succes&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show();</span>
+        <span class="s1">}</span>
+
+        <span class="s1">progressBar.setVisibility(View.VISIBLE);</span>
+
+        <span class="s4">//autentificare utilizator</span>
+
+        <span class="s1">fAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(task -&gt; {</span>
+            <span class="s0">if </span><span class="s1">(task.isSuccessful()) {</span>
+                <span class="s1">Toast.makeText(LoginActivity.</span><span class="s0">this</span><span class="s1">, </span><span class="s3">&quot;Inregistrare reusita&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show();</span>
+                <span class="s1">startActivity(</span><span class="s0">new </span><span class="s1">Intent(getApplicationContext(), DashboardActivity.</span><span class="s0">class</span><span class="s1">));</span>
+            <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+                <span class="s1">Toast.makeText(LoginActivity.</span><span class="s0">this</span><span class="s1">, </span><span class="s3">&quot;Eroare!&quot; </span><span class="s1">+ Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();</span>
+                <span class="s1">progressBar.setVisibility(View.GONE);</span>
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+    <span class="s1">}</span>
+<span class="s1">});</span>
+        <span class="s1">tv.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                <span class="s1">startActivity(</span><span class="s0">new </span><span class="s1">Intent(getApplicationContext(), RegisterActivity.</span><span class="s0">class</span><span class="s1">));</span>
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+
+        <span class="s1">forgotTextLink.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                <span class="s1">EditText resetmail = </span><span class="s0">new </span><span class="s1">EditText(view.getContext());</span>
+                <span class="s1">AlertDialog.Builder passwordResetDialog = </span><span class="s0">new </span><span class="s1">AlertDialog.Builder(view.getContext());</span>
+                <span class="s1">passwordResetDialog.setTitle(</span><span class="s3">&quot;Doriti sa resetati parola?&quot;</span><span class="s1">);</span>
+                <span class="s1">passwordResetDialog.setMessage(</span><span class="s3">&quot;Introduceti parola pentru a primi linkul de resetare&quot;</span><span class="s1">);</span>
+                <span class="s1">passwordResetDialog.setView(resetmail);</span>
+
+                <span class="s1">passwordResetDialog.setPositiveButton(</span><span class="s3">&quot;Da&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">DialogInterface.OnClickListener() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onClick(DialogInterface dialogInterface, </span><span class="s0">int </span><span class="s1">witch) {</span>
+                <span class="s4">//extrag email si trimit link</span>
+
+                        <span class="s1">String mail = resetmail.getText().toString();</span>
+                        <span class="s1">fAuth.sendPasswordResetEmail(mail).addOnSuccessListener(</span><span class="s0">new </span><span class="s1">OnSuccessListener&lt;Void&gt;() {</span>
+                            <span class="s1">@Override</span>
+                            <span class="s0">public void </span><span class="s1">onSuccess(Void unused) {</span>
+                                <span class="s1">Toast.makeText(LoginActivity.</span><span class="s0">this</span><span class="s1">, </span><span class="s3">&quot;Linkul de resetare a fost trimis&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show();</span>
+
+                            <span class="s1">}</span>
+                        <span class="s1">}).addOnFailureListener(</span><span class="s0">new </span><span class="s1">OnFailureListener() {</span>
+                            <span class="s1">@Override</span>
+                            <span class="s0">public void </span><span class="s1">onFailure(@NonNull Exception e) {</span>
+                                <span class="s1">Toast.makeText(LoginActivity.</span><span class="s0">this</span><span class="s1">, </span><span class="s3">&quot;Eroare! Link de resetare netrimis&quot; </span><span class="s1">+ e.getMessage(), Toast.LENGTH_SHORT).show();</span>
+                            <span class="s1">}</span>
+                        <span class="s1">});</span>
+                    <span class="s1">}</span>
+                <span class="s1">});</span>
+
+                <span class="s1">passwordResetDialog.setNegativeButton(</span><span class="s3">&quot;Nu&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">DialogInterface.OnClickListener() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onClick(DialogInterface dialogInterface, </span><span class="s0">int </span><span class="s1">i) {</span>
+                        <span class="s4">//inchide dialog</span>
+                    <span class="s1">}</span>
+                <span class="s1">});</span>
+
+                <span class="s1">passwordResetDialog.create().show();</span>
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>

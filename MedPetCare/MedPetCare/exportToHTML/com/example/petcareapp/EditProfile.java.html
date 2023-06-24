@@ -1,0 +1,130 @@
+<html>
+<head>
+<title>EditProfile.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #1750eb;}
+.s3 { color: #067d17;}
+.ls0 { height: 1px; border-width: 0; color: #c0c0c0; background-color:#c0c0c0}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+EditProfile.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.petcareapp;</span>
+
+<span class="s0">import static </span><span class="s1">com.example.petcareapp.RegisterActivity.TAG;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Intent;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle;</span>
+<span class="s0">import </span><span class="s1">android.util.Log;</span>
+<span class="s0">import </span><span class="s1">android.view.View;</span>
+<span class="s0">import </span><span class="s1">android.widget.EditText;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageView;</span>
+<span class="s0">import </span><span class="s1">android.widget.ProgressBar;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast;</span>
+
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnCompleteListener;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnFailureListener;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnSuccessListener;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.Task;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.AuthResult;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.FirebaseAuth;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.FirebaseUser;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.DocumentReference;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.DocumentSnapshot;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.FirebaseFirestore;</span>
+
+<span class="s0">import </span><span class="s1">java.util.HashMap;</span>
+<span class="s0">import </span><span class="s1">java.util.Map;</span>
+
+<span class="s0">public class </span><span class="s1">EditProfile </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+    <span class="s1">ImageView btnDashboard;</span>
+    <span class="s1">TextView  logout, saveProfile;</span>
+    <span class="s1">EditText numeProfilEdit, prenumeProfilEdit;</span>
+    <span class="s1">FirebaseAuth mAuth;</span>
+    <span class="s1">FirebaseFirestore fStore;</span>
+    <span class="s1">ProgressBar progressBar;</span>
+    <span class="s1">String userId;</span>
+
+<hr class="ls0">    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState);</span>
+        <span class="s1">setContentView(R.layout.activity_edit_profile);</span>
+
+        <span class="s1">btnDashboard = findViewById(R.id.tvDasboardBack);</span>
+        <span class="s1">logout = findViewById(R.id.tvToolbarLogout);</span>
+        <span class="s1">numeProfilEdit = findViewById(R.id.numeProfilEdit);</span>
+        <span class="s1">prenumeProfilEdit = findViewById(R.id.prenumeProfilEdit);</span>
+        <span class="s1">saveProfile = findViewById(R.id.saveProfile);</span>
+        <span class="s1">progressBar = findViewById(R.id.progressBar3);</span>
+
+        <span class="s1">mAuth = FirebaseAuth.getInstance();</span>
+        <span class="s1">fStore = FirebaseFirestore.getInstance();</span>
+
+        <span class="s1">saveProfile.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                <span class="s1">String nume=numeProfilEdit.getText().toString();</span>
+
+                <span class="s0">if </span><span class="s1">(nume.length() == </span><span class="s2">0 </span><span class="s1">|| numeProfilEdit.length() == </span><span class="s2">0 </span><span class="s1">) {</span>
+                    <span class="s1">Toast.makeText(getApplicationContext(), </span><span class="s3">&quot;Nu ati introdus toate datele necesare&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show();</span>
+                <span class="s1">}</span><span class="s0">else </span><span class="s1">{</span>
+                    <span class="s1">Toast.makeText(getApplicationContext(), </span><span class="s3">&quot;Succes&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show();</span>
+                <span class="s1">}</span>
+
+
+                <span class="s1">progressBar.setVisibility(View.VISIBLE);</span>
+
+                            <span class="s1">Toast.makeText(EditProfile.</span><span class="s0">this</span><span class="s1">,</span><span class="s3">&quot;Cont updatat&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show();</span>
+                            <span class="s1">userId = mAuth.getCurrentUser().getUid();</span>
+                            <span class="s1">DocumentReference documentReference = fStore.collection(</span><span class="s3">&quot;users&quot;</span><span class="s1">).document(userId);</span>
+                            <span class="s1">Map&lt;String, Object&gt; user = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;();</span>
+                            <span class="s1">user.put(</span><span class="s3">&quot;nume&quot;</span><span class="s1">, nume);</span>
+
+                            <span class="s1">documentReference.set(user).addOnSuccessListener(</span><span class="s0">new </span><span class="s1">OnSuccessListener&lt;Void&gt;() {</span>
+                                <span class="s1">@Override</span>
+                                <span class="s0">public void </span><span class="s1">onSuccess(Void aVoid) {</span>
+                                    <span class="s1">Log.d(TAG, </span><span class="s3">&quot;onSuccess: Profilul utilizatorului a fost modificat&quot; </span><span class="s1">+ userId);</span>
+                                <span class="s1">}</span>
+                            <span class="s1">});</span>
+
+                            <span class="s1">startActivity(</span><span class="s0">new </span><span class="s1">Intent(getApplicationContext(),MainActivity.</span><span class="s0">class</span><span class="s1">));</span>
+                        <span class="s1">}</span>
+                    <span class="s1">});</span>
+
+
+
+
+        <span class="s1">btnDashboard.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                        <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(EditProfile.</span><span class="s0">this</span><span class="s1">, DashboardActivity.</span><span class="s0">class</span><span class="s1">);</span>
+                        <span class="s1">startActivity(intent);</span>
+                        <span class="s1">finish();</span>
+                    <span class="s1">}</span>
+                <span class="s1">});</span>
+
+                <span class="s1">logout.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                        <span class="s1">mAuth.signOut();</span>
+                        <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(EditProfile.</span><span class="s0">this</span><span class="s1">, LoginActivity.</span><span class="s0">class</span><span class="s1">);</span>
+                        <span class="s1">startActivity(intent);</span>
+                        <span class="s1">finish();</span>
+                    <span class="s1">}</span>
+                <span class="s1">});</span>
+            <span class="s1">}</span>
+
+<span class="s1">}</span></pre>
+</body>
+</html>

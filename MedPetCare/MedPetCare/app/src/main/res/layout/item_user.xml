@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/usernameTextView"
+        android:layout_width="wrap_content"
+        android:textColor="@color/black"
+        android:layout_height="wrap_content"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvUnreadCount"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2"
+        android:textColor="@color/black"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="2dp"
+        android:backgroundTint="@android:color/holo_red_dark"
+        android:background="@drawable/bg_chat_receiver"
+        android:layout_alignParentEnd="true"/>
+
+    <TextView
+        android:id="@+id/userEmailTextView"
+        android:layout_width="wrap_content"
+        android:textColor="@color/black"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        android:layout_below="@id/usernameTextView"
+        android:layout_height="wrap_content"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/userTypeTextView"
+        android:layout_width="wrap_content"
+        android:textColor="@color/black"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/userEmailTextView"
+        android:layout_height="wrap_content"
+        android:textStyle="italic" />
+
+</RelativeLayout>

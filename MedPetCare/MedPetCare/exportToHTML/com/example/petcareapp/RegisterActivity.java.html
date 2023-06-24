@@ -1,0 +1,166 @@
+<html>
+<head>
+<title>RegisterActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #067d17;}
+.s3 { color: #8c8c8c; font-style: italic;}
+.s4 { color: #1750eb;}
+.ls0 { height: 1px; border-width: 0; color: #c0c0c0; background-color:#c0c0c0}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+RegisterActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.petcareapp;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity;</span>
+
+<span class="s0">import </span><span class="s1">android.annotation.SuppressLint;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle;</span>
+<span class="s0">import </span><span class="s1">android.util.Log;</span>
+<span class="s0">import </span><span class="s1">android.view.View;</span>
+<span class="s0">import </span><span class="s1">android.widget.AdapterView;</span>
+<span class="s0">import </span><span class="s1">android.widget.ArrayAdapter;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button;</span>
+<span class="s0">import </span><span class="s1">android.widget.EditText;</span>
+<span class="s0">import </span><span class="s1">android.widget.ProgressBar;</span>
+<span class="s0">import </span><span class="s1">android.widget.Spinner;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnCompleteListener;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnFailureListener;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnSuccessListener;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.Task;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.AuthResult;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.FirebaseAuth;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.FirebaseUser;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.DocumentReference;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.FirebaseFirestore;</span>
+
+<span class="s0">import </span><span class="s1">java.util.HashMap;</span>
+<span class="s0">import </span><span class="s1">java.util.Map;</span>
+
+<span class="s0">public class </span><span class="s1">RegisterActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+    <span class="s0">public static final </span><span class="s1">String TAG = </span><span class="s2">&quot;Tag&quot;</span><span class="s1">;</span>
+    <span class="s1">EditText rgNume, rgPrenume, rgEmail, rgPass;</span>
+    <span class="s1">Button rgBtn;</span>
+    <span class="s1">TextView existingUser;</span>
+    <span class="s1">Spinner spinnerUser;</span>
+    <span class="s1">ProgressBar progressBar;</span>
+    <span class="s1">FirebaseFirestore fStore;</span>
+    <span class="s1">String userID;</span>
+
+
+<hr class="ls0">    <span class="s1">@SuppressLint(</span><span class="s2">&quot;MissingInflatedId&quot;</span><span class="s1">)</span>
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState);</span>
+        <span class="s1">setContentView(R.layout.activity_register);</span>
+        <span class="s1">rgNume = findViewById(R.id.editTextRegisterNume);</span>
+        <span class="s1">rgPrenume = findViewById(R.id.editTextPersonRegisterPrenume);</span>
+        <span class="s1">rgEmail = findViewById(R.id.editTextEmailRegister);</span>
+        <span class="s1">rgPass = findViewById(R.id.editTextRegisterPassword);</span>
+        <span class="s1">rgBtn=findViewById(R.id.buttonLogin);</span>
+        <span class="s1">existingUser = findViewById(R.id.tvNewUser);</span>
+        <span class="s1">spinnerUser = findViewById(R.id.spinnerUserType);</span>
+
+        <span class="s1">FirebaseAuth fAuth = FirebaseAuth.getInstance();</span>
+        <span class="s1">fStore = FirebaseFirestore.getInstance();</span>
+        <span class="s1">progressBar = findViewById(R.id.progressBar);</span>
+
+        <span class="s3">//verificam daca utilizatorul nu este deja logat</span>
+        <span class="s0">if</span><span class="s1">(fAuth.getCurrentUser() !=</span><span class="s0">null</span><span class="s1">){</span>
+            <span class="s1">startActivity(</span><span class="s0">new </span><span class="s1">Intent (getApplicationContext(),MainActivity.</span><span class="s0">class</span><span class="s1">));</span>
+            <span class="s1">finish();</span>
+        <span class="s1">}</span>
+
+        <span class="s1">rgBtn.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                <span class="s1">String nume=rgNume.getText().toString();</span>
+                <span class="s1">String prenume=rgPrenume.getText().toString();</span>
+                <span class="s1">String email= rgEmail.getText().toString();</span>
+                <span class="s1">String password=rgPass.getText().toString();</span>
+                <span class="s1">String spinner =spinnerUser.getSelectedItem().toString();</span>
+
+                <span class="s0">if </span><span class="s1">(nume.length() == </span><span class="s4">0 </span><span class="s1">|| prenume.length() == </span><span class="s4">0 </span><span class="s1">|| email.length() == </span><span class="s4">0 </span><span class="s1">|| password.length() == </span><span class="s4">0</span><span class="s1">) {</span>
+                    <span class="s1">Toast.makeText(getApplicationContext(), </span><span class="s2">&quot;Nu ati introdus toate datele necesare&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show();</span>
+                <span class="s1">}</span><span class="s0">else </span><span class="s1">{</span>
+                    <span class="s1">Toast.makeText(getApplicationContext(), </span><span class="s2">&quot;Succes&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show();</span>
+                <span class="s1">}</span>
+
+                <span class="s0">if</span><span class="s1">(rgPass.length() &lt; </span><span class="s4">6</span><span class="s1">) {</span>
+                    <span class="s1">rgPass.setError(</span><span class="s2">&quot;Minim 6 caractere necesare&quot;</span><span class="s1">);</span>
+                <span class="s1">}</span>
+
+                <span class="s1">progressBar.setVisibility(View.VISIBLE);</span>
+
+                <span class="s1">fAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;AuthResult&gt;() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;AuthResult&gt; task) {</span>
+                        <span class="s0">if</span><span class="s1">(task.isSuccessful()){</span>
+                            <span class="s3">//trimitem email de verificare</span>
+                            <span class="s1">FirebaseUser FirebaseUser = fAuth.getCurrentUser();</span>
+                            <span class="s1">FirebaseUser.sendEmailVerification().addOnSuccessListener(</span><span class="s0">new </span><span class="s1">OnSuccessListener&lt;Void&gt;() {</span>
+                                <span class="s1">@Override</span>
+                                <span class="s0">public void </span><span class="s1">onSuccess(Void aVoid) {</span>
+                                    <span class="s1">Toast.makeText(RegisterActivity.</span><span class="s0">this</span><span class="s1">, </span><span class="s2">&quot;Emailul de verificare a fost trimis&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show();</span>
+                                <span class="s1">}</span>
+                            <span class="s1">}).addOnFailureListener(</span><span class="s0">new </span><span class="s1">OnFailureListener() {</span>
+                                <span class="s1">@Override</span>
+                                <span class="s0">public void </span><span class="s1">onFailure(@NonNull Exception e) {</span>
+                                    <span class="s1">Log.d(TAG, </span><span class="s2">&quot;onFailure: Emailul nu a fost trimis&quot; </span><span class="s1">+ e.getMessage());</span>
+                                <span class="s1">}</span>
+                            <span class="s1">});</span>
+
+
+                            <span class="s1">Toast.makeText(RegisterActivity.</span><span class="s0">this</span><span class="s1">,</span><span class="s2">&quot;Cont creat&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show();</span>
+                            <span class="s1">userID = fAuth.getCurrentUser().getUid();</span>
+                            <span class="s1">DocumentReference documentReference = fStore.collection(</span><span class="s2">&quot;users&quot;</span><span class="s1">).document(userID);</span>
+                            <span class="s1">Map&lt;String, Object&gt; user = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;();</span>
+                            <span class="s1">user.put(</span><span class="s2">&quot;nume&quot;</span><span class="s1">, nume);</span>
+                            <span class="s1">user.put(</span><span class="s2">&quot;prenume&quot;</span><span class="s1">,prenume);</span>
+                            <span class="s1">user.put(</span><span class="s2">&quot;email&quot;</span><span class="s1">, email);</span>
+                            <span class="s1">user.put(</span><span class="s2">&quot;tip utilizator&quot;</span><span class="s1">, spinner);</span>
+                            <span class="s1">documentReference.set(user).addOnSuccessListener(</span><span class="s0">new </span><span class="s1">OnSuccessListener&lt;Void&gt;() {</span>
+                                <span class="s1">@Override</span>
+                                <span class="s0">public void </span><span class="s1">onSuccess(Void aVoid) {</span>
+                                    <span class="s1">Log.d(TAG, </span><span class="s2">&quot;onSuccess: Profilul utilizatorului a fost creat pentru&quot; </span><span class="s1">+ userID);</span>
+                                <span class="s1">}</span>
+                            <span class="s1">});</span>
+
+                            <span class="s1">startActivity(</span><span class="s0">new </span><span class="s1">Intent(getApplicationContext(),MainActivity.</span><span class="s0">class</span><span class="s1">));</span>
+                        <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+                            <span class="s1">Toast.makeText(RegisterActivity.</span><span class="s0">this</span><span class="s1">,</span><span class="s2">&quot;Eroare!&quot; </span><span class="s1">+ task.getException().getMessage(), Toast.LENGTH_SHORT).show();</span>
+                            <span class="s1">progressBar.setVisibility(View.GONE);</span>
+                        <span class="s1">}</span>
+                    <span class="s1">}</span>
+                <span class="s1">});</span>
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+
+        <span class="s1">existingUser.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                <span class="s1">startActivity(</span><span class="s0">new </span><span class="s1">Intent(getApplicationContext(),LoginActivity.</span><span class="s0">class</span><span class="s1">));</span>
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+
+        <span class="s1">ArrayAdapter&lt;CharSequence&gt; adapter;</span>
+        <span class="s1">adapter = ArrayAdapter.createFromResource(</span><span class="s0">this</span><span class="s1">, R.array.userType, R.layout.spnr_usertype);</span>
+        <span class="s1">adapter.setDropDownViewResource(R.layout.drpdb_usertype);</span>
+        <span class="s1">spinnerUser.setAdapter(adapter);</span>
+
+    <span class="s1">}</span>
+
+<span class="s1">}</span></pre>
+</body>
+</html>

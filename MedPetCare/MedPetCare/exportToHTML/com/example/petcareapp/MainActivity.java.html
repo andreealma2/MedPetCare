@@ -1,0 +1,107 @@
+<html>
+<head>
+<title>MainActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #067d17;}
+.ls0 { height: 1px; border-width: 0; color: #c0c0c0; background-color:#c0c0c0}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.petcareapp;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.Nullable;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Intent;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle;</span>
+<span class="s0">import </span><span class="s1">android.view.View;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageView;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView;</span>
+
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.FirebaseAuth;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.DocumentReference;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.DocumentSnapshot;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.EventListener;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.FirebaseFirestore;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.FirebaseFirestoreException;</span>
+
+
+<span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+
+ <span class="s1">ImageView btnDashboard;</span>
+<span class="s1">FirebaseAuth mAuth;</span>
+<span class="s1">FirebaseFirestore fStore;</span>
+<span class="s1">String userId;</span>
+<span class="s1">TextView nume, prenume, adresaEmail, logout, editProfile;</span>
+
+<hr class="ls0">    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState);</span>
+        <span class="s1">setContentView(R.layout.activity_main);</span>
+        <span class="s1">nume = findViewById(R.id.numeProfilEdit);</span>
+        <span class="s1">prenume = findViewById(R.id.prenumeProfilEdit);</span>
+        <span class="s1">adresaEmail = findViewById(R.id.emailProfil);</span>
+        <span class="s1">btnDashboard = findViewById(R.id.tvDasboardBack);</span>
+        <span class="s1">editProfile = findViewById(R.id.editProfile);</span>
+
+
+        <span class="s1">mAuth = FirebaseAuth.getInstance();</span>
+        <span class="s1">fStore=FirebaseFirestore.getInstance();</span>
+
+        <span class="s1">userId = mAuth.getCurrentUser().getUid();</span>
+
+        <span class="s1">DocumentReference documentReference =fStore.collection(</span><span class="s2">&quot;users&quot;</span><span class="s1">).document(userId);</span>
+        <span class="s1">documentReference.addSnapshotListener(</span><span class="s0">this</span><span class="s1">, </span><span class="s0">new </span><span class="s1">EventListener&lt;DocumentSnapshot&gt;() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {</span>
+                <span class="s1">nume.setText(documentSnapshot.getString(</span><span class="s2">&quot;nume&quot;</span><span class="s1">));</span>
+                <span class="s1">prenume.setText(documentSnapshot.getString(</span><span class="s2">&quot;prenume&quot;</span><span class="s1">));</span>
+                <span class="s1">adresaEmail.setText(documentSnapshot.getString(</span><span class="s2">&quot;email&quot;</span><span class="s1">));</span>
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+
+
+        <span class="s1">btnDashboard.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this</span><span class="s1">, DashboardActivity.</span><span class="s0">class</span><span class="s1">);</span>
+                <span class="s1">startActivity(intent);</span>
+                <span class="s1">finish();</span>
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+
+        <span class="s1">editProfile.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this</span><span class="s1">, EditProfile.</span><span class="s0">class</span><span class="s1">);</span>
+                <span class="s1">startActivity(intent);</span>
+                <span class="s1">finish();</span>
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+
+        <span class="s1">logout = findViewById(R.id.tvToolbarLogout);</span>
+        <span class="s1">logout.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                <span class="s1">mAuth.signOut();</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this</span><span class="s1">, LoginActivity.</span><span class="s0">class</span><span class="s1">);</span>
+                <span class="s1">startActivity(intent);</span>
+                <span class="s1">finish();</span>
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+
+    <span class="s1">}</span>
+<span class="s1">}</span>
+
+
+</pre>
+</body>
+</html>
